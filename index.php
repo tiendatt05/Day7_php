@@ -1,18 +1,13 @@
 <?php
-// --- Classes ---
-
 class AffiliatePartner
 {
-    // Hằng số tên nền tảng
     public const PLATFORM_NAME = "VietLink Affiliate";
 
-    // Thuộc tính
     private string $name;
     private string $email;
     private float $commissionRate;
     private bool $isActive;
 
-    // Constructor
     public function __construct(string $name, string $email, float $commissionRate, bool $isActive = true)
     {
         $this->name = $name;
@@ -21,26 +16,22 @@ class AffiliatePartner
         $this->isActive = $isActive;
     }
 
-    // Destructor
     public function __destruct()
     {
         echo "<!-- Đối tượng AffiliatePartner '{$this->name}' đã bị hủy -->\n";
     }
 
-    // Tính hoa hồng dựa trên giá trị đơn hàng
     public function calculateCommission(float $orderValue): float
     {
         return $orderValue * ($this->commissionRate / 100);
     }
 
-    // Trả về thông tin tổng quan
     public function getSummary(): string
     {
         return "CTV: {$this->name} | Email: {$this->email} | Tỷ lệ hoa hồng: {$this->commissionRate}% | "
             . "Trạng thái: " . ($this->isActive ? "Hoạt động" : "Không hoạt động") . " | Nền tảng: " . self::PLATFORM_NAME;
     }
 
-    // Getter
     public function getName(): string
     {
         return $this->name;
@@ -69,20 +60,17 @@ class PremiumAffiliatePartner extends AffiliatePartner
         $this->bonusPerOrder = $bonusPerOrder;
     }
 
-    // Override calculateCommission
     public function calculateCommission(float $orderValue): float
     {
         $baseCommission = parent::calculateCommission($orderValue);
         return $baseCommission + $this->bonusPerOrder;
     }
 
-    // Getter bonus
     public function getBonusPerOrder(): float
     {
         return $this->bonusPerOrder;
     }
 
-    // Override getSummary để thêm bonus
     public function getSummary(): string
     {
         return parent::getSummary() . " | Bonus mỗi đơn: " . number_format($this->bonusPerOrder, 0) . " VNĐ";
@@ -93,7 +81,6 @@ class AffiliateManager
 {
     private array $partners = [];
 
-    // Thêm cộng tác viên
     public function addPartner(AffiliatePartner $affiliate): void
     {
         if ($affiliate->getIsActive()) {
@@ -101,13 +88,11 @@ class AffiliateManager
         }
     }
 
-    // Lấy danh sách cộng tác viên
     public function getPartners(): array
     {
         return $this->partners;
     }
 
-    // In ra danh sách cộng tác viên (debug)
     public function listPartners(): void
     {
         foreach ($this->partners as $partner) {
@@ -115,7 +100,6 @@ class AffiliateManager
         }
     }
 
-    // Tính tổng hoa hồng của tất cả cộng tác viên khi mỗi người bán đơn hàng trị giá $orderValue
     public function totalCommission(float $orderValue): float
     {
         $total = 0;
@@ -126,17 +110,12 @@ class AffiliateManager
     }
 }
 
-// --- Khởi tạo dữ liệu và xử lý nghiệp vụ ---
 $manager = new AffiliateManager();
 
-// Tạo 2 cộng tác viên thường
 $affiliate1 = new AffiliatePartner("Nguyen Van A", "a@example.com", 5.0);
 $affiliate2 = new AffiliatePartner("Tran Thi B", "b@example.com", 7.5);
-
-// Tạo 1 cộng tác viên cao cấp
 $premiumAffiliate = new PremiumAffiliatePartner("Le Van C", "c@example.com", 6.0, 100000);
 
-// Thêm vào manager
 $manager->addPartner($affiliate1);
 $manager->addPartner($affiliate2);
 $manager->addPartner($premiumAffiliate);
